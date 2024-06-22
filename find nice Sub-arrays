@@ -1,29 +1,36 @@
 class Solution {
     public int numberOfSubarrays(int[] nums, int k) {
-         int count = 0;
-
-        // Outer loop picks the starting index
-        for (int start = 0; start < nums.length; start++) {
-            // Inner loop picks the ending index
-            for (int end = start ; end < nums.length; end++) {
-                // Extract subarray
-                int[] subarray = Arrays.copyOfRange(nums, start, end + 1);
-                // Count subarray if length is >= 3 and it has exactly one odd number
-                if (subarray.length >= k && countOddNumbers(subarray) == k) {
-                    count++;
-                }
+        int arrSize =nums.length;
+        
+        for(int i=0;i<arrSize;i++){
+            if(nums[i] % 2==0){
+                nums[i]=0;
+            }else{
+                nums[i]=1;
             }
-        }
 
-        return count;
-    }
-     private static int countOddNumbers(int[] subarray) {
+        }
         int count = 0;
-        for (int num : subarray) {
-            if (num % 2 != 0) {
-                count++;
+        int currentSum = 0;
+        int[] prefixSumCount = new int[arrSize + 1];
+        prefixSumCount[0] = 1; // Initialize with base case
+
+        for (int num : nums) {
+            currentSum += num;
+
+            // Check if there exists a prefix subarray with sum (currentSum - k)
+            if (currentSum >= k) {
+                count += prefixSumCount[currentSum - k];
             }
+
+            // Increment the count of currentSum in prefixSumCount array
+            prefixSumCount[currentSum]++;
         }
+
         return count;
+ 
+
+
+        
     }
 }
